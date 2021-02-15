@@ -38,8 +38,8 @@ public class JDBCDepartmentDAO implements DepartmentDAO {
 	public List<Department> searchDepartmentsByName(String nameSearch) {
 		
 		String sql = "SELECT department_id, name FROM department" + 
-				"WHERE name ILIKE ?";
-		SqlRowSet rows = jdbcTemplate.queryForRowSet(sql, "%" + nameSearch + "%");
+				"WHERE name ILIKE %?%";
+		SqlRowSet rows = jdbcTemplate.queryForRowSet(sql, nameSearch);
 		
 		List<Department> departmentsFound = new ArrayList<Department>();
 		while (rows.next()) {
@@ -52,17 +52,35 @@ public class JDBCDepartmentDAO implements DepartmentDAO {
 	@Override
 	public void saveDepartment(Department updatedDepartment) {
 		
-		String sql = "";
+		String sql = "UPDATE department SET name = ? WHERE department_id = ?";
+		jdbcTemplate.update(sql, updatedDepartment.getName(), updatedDepartment.getId());
 	
 	}
 
 	@Override
 	public Department createDepartment(Department newDepartment) {
-		return null;
+		
+		String sql = "INSERT INTO department (department_id, name) VALUES (DEFAULT, ?) RETURNING department_id";
+		SqlRowSet rows = jdbcTemplate.queryForRowSet(sql, newDepartment.getName());
+		
+		
+		if (rows.next()) {
+			newDepartment.setId(rows.getLong("department_id"));
+		}
+		
+		return newDepartment;
 	}
 
 	@Override
 	public Department getDepartmentById(Long id) {
+		String sql = "SELECT department_id, name FROM department WHERE department_id = ?";
+		
+		SqlRowSet rows = jdbcTemplate.queryForRowSet(sql, id);
+		
+		if (rows.next()) {
+			return rowToDepartment(rows);
+		}
+		
 		return null;
 	}
 	
