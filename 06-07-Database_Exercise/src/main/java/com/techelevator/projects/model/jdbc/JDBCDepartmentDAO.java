@@ -38,8 +38,8 @@ public class JDBCDepartmentDAO implements DepartmentDAO {
 	public List<Department> searchDepartmentsByName(String nameSearch) {
 		
 		String sql = "SELECT department_id, name FROM department" + 
-				"WHERE name ILIKE %?%";
-		SqlRowSet rows = jdbcTemplate.queryForRowSet(sql, nameSearch);
+				" WHERE name ILIKE ?";
+		SqlRowSet rows = jdbcTemplate.queryForRowSet(sql, "%" + nameSearch + "%");
 		
 		List<Department> departmentsFound = new ArrayList<Department>();
 		while (rows.next()) {
