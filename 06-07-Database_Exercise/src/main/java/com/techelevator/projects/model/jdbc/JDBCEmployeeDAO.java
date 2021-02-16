@@ -58,7 +58,7 @@ public class JDBCEmployeeDAO implements EmployeeDAO {
 	public List<Employee> getEmployeesByDepartmentId(long id) {
 		
 		String sql = "SELECT employee_id, department_id, first_name, last_name, birth_date, gender, hire_date FROM employee"
-				+ " WHERE employee_id = ?";
+				+ " WHERE department_id = ?";
 		SqlRowSet rows = jdbcTemplate.queryForRowSet(sql, id);
 		
 		List<Employee> employeesFound = new ArrayList<Employee>();
@@ -89,27 +89,35 @@ public class JDBCEmployeeDAO implements EmployeeDAO {
 
 	@Override
 	public List<Employee> getEmployeesByProjectId(Long projectId) {
-		return new ArrayList<>();
+		String sql = "SELECT e.employee_id, e.department_id, e.first_name, e.last_name, e.birth_date, e.gender, e.hire_date FROM employee e " + 
+				"JOIN project_employee ON e.employee_id = project_employee.employee_id " + 
+				"WHERE project_id = ?";
+		SqlRowSet rows = jdbcTemplate.queryForRowSet(sql, projectId);
+		
+		List<Employee> employeesFound = new ArrayList<Employee>();
+		while (rows.next()) {
+			employeesFound.add(rowToEmployee(rows));
+		}
+
+		return employeesFound;
 	}
 
 	@Override
 	public void changeEmployeeDepartment(Long employeeId, Long departmentId) {
-		
+		String sql = "UPDATE employee " + 
+				"SET department_id = ? " + 
+				"WHERE employee_id = ?";
+		jdbcTemplate.update(sql, departmentId, employeeId);
 	}
 	
 	private Employee rowToEmployee(SqlRowSet row) {
-		Employee employee = new Employee();
+		Employee employee = new Employee();		
 		
-		LocalDate birthDate = LocalDate.parse((CharSequence) row.getDate("birth_date")); 
-		char gender = row.getString("gender").charAt(0);
-		LocalDate hireDate = LocalDate.parse((CharSequence) row.getDate("hire_date"));
-		
-		
-		employee.setBirthDay(birthDate);
+		employee.setBirthDay(row.getDate("birth_date").toLocalDate());
 		employee.setFirstName(row.getString("first_name"));
 		employee.setLastName(row.getString("last_name"));
-		employee.setGender(gender);
-		employee.setHireDate(hireDate);
+		employee.setGender(row.getString("gender").charAt(0));
+		employee.setHireDate(row.getDate("hire_date").toLocalDate());
 		employee.setDepartmentId(row.getLong("department_id"));
 		employee.setId(row.getLong("employee_id"));
 		
