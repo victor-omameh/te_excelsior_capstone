@@ -1,6 +1,7 @@
 package com.techelevator.projects.model;
 
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.List;
 
 import org.junit.*;
@@ -82,6 +83,39 @@ public class JdbcDepartmentDaoIntegrationTest {
 		
 
 		
+	}
+	
+	@Test
+	public void save_departments_test() {
+		Department originalDepartment = departmentDao.createDepartment(getTestDepartment());
+		
+		Department updateDepartment = new Department();
+		updateDepartment.setName("UpdateTest");
+		updateDepartment.setId(originalDepartment.getId());
+		
+		
+		departmentDao.saveDepartment(updateDepartment);
+	
+		
+		Assert.assertEquals(updateDepartment, departmentDao.getDepartmentById(originalDepartment.getId()));
+		
+	}
+	
+	@Test
+	public void search_departments_by_name_test() {
+		
+		Department testDepartmentOne = departmentDao.createDepartment(getTestDepartment());
+		Department testDepartment = new Department();
+		testDepartment.setName("TestName2");
+		departmentDao.createDepartment(testDepartment);
+		
+		List<Department> listAfterInserts = new ArrayList<Department>();
+		listAfterInserts.add(testDepartmentOne);
+		listAfterInserts.add(testDepartment);
+		
+		List<Department> result = departmentDao.searchDepartmentsByName("TestName");
+		
+		Assert.assertEquals(listAfterInserts, result);
 	}
 	
 	private Department getTestDepartment() {
