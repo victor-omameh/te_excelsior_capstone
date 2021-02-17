@@ -53,8 +53,18 @@ public class JDBCProjectDAO implements ProjectDAO {
 		
 		project.setName(row.getString("name"));
 		project.setId(row.getLong("project_id"));
-		project.setEndDate(row.getDate("to_date").toLocalDate());
-		project.setStartDate(row.getDate("from_date").toLocalDate());
+		
+		if (row.getDate("to_date") == null) {
+			project.setEndDate(null);
+		} else {
+			project.setEndDate(row.getDate("to_date").toLocalDate());
+		}
+		
+		if (row.getDate("from_date") == null) {
+			project.setStartDate(null);
+		} else {
+			project.setStartDate(row.getDate("from_date").toLocalDate());
+		}
 		
 		return project;
 	}
