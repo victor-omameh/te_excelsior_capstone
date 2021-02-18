@@ -4,7 +4,18 @@ import javax.sql.DataSource;
 
 import org.apache.commons.dbcp2.BasicDataSource;
 
+import com.techelevator.operations.ReservationDao;
+import com.techelevator.operations.SpaceDao;
+import com.techelevator.operations.VenueDao;
+
 public class ExcelsiorCLI {
+	
+	private ReservationDao reservationDao;
+	private SpaceDao spaceDao;
+	private VenueDao venueDao;
+	
+	private Main main = new Main();
+	
 
 	public static void main(String[] args) {
 		BasicDataSource dataSource = new BasicDataSource();
@@ -17,10 +28,13 @@ public class ExcelsiorCLI {
 	}
 
 	public ExcelsiorCLI(DataSource datasource) {
-		// create your DAOs here
+		//reservationDao = new ReservationDao(dataSource);
 	}
 
 	public void run() {
-
+		String mainMenuSelection = main.getMainMenuSelection();
+		if (mainMenuSelection.equals("1")) {
+			//view venu method
+		}
 	}
 }
