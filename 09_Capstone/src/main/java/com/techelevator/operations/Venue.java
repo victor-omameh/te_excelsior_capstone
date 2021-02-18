@@ -59,5 +59,63 @@ public class Venue {
 	public void setCategoryId(int categoryId) {
 		this.categoryId = categoryId;
 	}
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + categoryId;
+		result = prime * result + ((categoryName == null) ? 0 : categoryName.hashCode());
+		result = prime * result + cityId;
+		result = prime * result + ((cityName == null) ? 0 : cityName.hashCode());
+		result = prime * result + ((description == null) ? 0 : description.hashCode());
+		result = prime * result + ((stateName == null) ? 0 : stateName.hashCode());
+		result = prime * result + venueId;
+		result = prime * result + ((venueName == null) ? 0 : venueName.hashCode());
+		return result;
+	}
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		Venue other = (Venue) obj;
+		if (categoryId != other.categoryId)
+			return false;
+		if (categoryName == null) {
+			if (other.categoryName != null)
+				return false;
+		} else if (!categoryName.equals(other.categoryName))
+			return false;
+		if (cityId != other.cityId)
+			return false;
+		if (cityName == null) {
+			if (other.cityName != null)
+				return false;
+		} else if (!cityName.equals(other.cityName))
+			return false;
+		if (description == null) {
+			if (other.description != null)
+				return false;
+		} else if (!description.equals(other.description))
+			return false;
+		if (stateName == null) {
+			if (other.stateName != null)
+				return false;
+		} else if (!stateName.equals(other.stateName))
+			return false;
+		if (venueId != other.venueId)
+			return false;
+		if (venueName == null) {
+			if (other.venueName != null)
+				return false;
+		} else if (!venueName.equals(other.venueName))
+			return false;
+		return true;
+	}
+	
+	
 	
 }

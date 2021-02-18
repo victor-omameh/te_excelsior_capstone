@@ -38,12 +38,13 @@ public class JdbcVenueDao implements VenueDao {
 				
 		return venueList;
 	}
+	
 
 	private Venue rowToVenue(SqlRowSet row) {
 		Venue venue = new Venue();
 		
 		venue.setVenueName(row.getString("venue_name"));
-		venue.setVenueId(row.getInt("venue_id"));
+		venue.setVenueId(row.getInt("id"));
 		venue.setDescription(row.getString("description"));
 		venue.setCityName(row.getString("city_name"));
 		venue.setStateName(row.getString("state_name"));

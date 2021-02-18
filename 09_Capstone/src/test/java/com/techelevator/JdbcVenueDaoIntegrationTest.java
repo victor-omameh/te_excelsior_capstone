@@ -1,5 +1,8 @@
 package com.techelevator;
 
+import java.sql.SQLException;
+import java.util.List;
+
 import org.junit.*;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.support.rowset.SqlRowSet;
@@ -12,11 +15,48 @@ public class JdbcVenueDaoIntegrationTest extends DAOIntegrationTest{
 	private VenueDao venueDao;
 	private JdbcTemplate jdbcTemplate;
 	
+
+	@BeforeClass 
+	public static void setupData() {
+		setupDataSource();
+	}
+	
+	@AfterClass
+	public static void closeData() throws SQLException {
+		closeDataSource();
+	}
+	
+	@After
+	public void rollbackTransaction() throws SQLException {
+		rollback();
+	}
+	
 	
 	@Before
 	public void setup() {
 		venueDao = new JdbcVenueDao(getDataSource());
 		jdbcTemplate = new JdbcTemplate(getDataSource());
+		
+		
+		
+	}
+	
+	@Test
+	public void get_all_venues_test() {
+		
+		List<Venue> originalList = venueDao.getAllVenues();
+		int originalCount = originalList.size();
+		
+		insertVenue();
+		
+		List<Venue> resultList = venueDao.getAllVenues();
+		int resultCount = resultList.size();
+		
+		Assert.assertEquals(originalCount + 1, resultCount);
+	}
+	
+	private void insertVenue() {
+		
 		Venue venue = new Venue();
 		
 		
@@ -43,19 +83,17 @@ public class JdbcVenueDaoIntegrationTest extends DAOIntegrationTest{
 		
 		String sqlCategoryVenue = "INSERT INTO category_venue (venue_id, category_id) VALUES (?, ?)";
 		SqlRowSet rowCategoryVenue = jdbcTemplate.queryForRowSet(sqlCategory, venue.getVenueId(), venue.getCategoryId());
-		
-		
-	}
-	
-	@Test
-	public void get_all_venues_test() {
-		
 	}
 	
 	
 	private Venue createVenue() {
 		
 		Venue testVenue = new Venue();
+		testVenue.setCategoryName("TestCat");
+		testVenue.setCityName("TestCity");
+		testVenue.setDescription("TESTESTTEST");
+		testVenue.setStateName("TestState");
+		testVenue.setVenueName("TestVenue");
 		
 		return null;
 	}
