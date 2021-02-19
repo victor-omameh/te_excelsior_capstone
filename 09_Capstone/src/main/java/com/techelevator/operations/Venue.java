@@ -9,6 +9,8 @@ public class Venue {
 	private int venueId;
 	private int cityId;
 	private int categoryId;
+	private int menuID;
+	
 	
 	
 	public String getVenueName() {
@@ -59,6 +61,13 @@ public class Venue {
 	public void setCategoryId(int categoryId) {
 		this.categoryId = categoryId;
 	}
+	public int getMenuID() {
+		return menuID;
+	}
+	public void setMenuID(int menuID) {
+		this.menuID = menuID;
+	}
+	
 	@Override
 	public int hashCode() {
 		final int prime = 31;

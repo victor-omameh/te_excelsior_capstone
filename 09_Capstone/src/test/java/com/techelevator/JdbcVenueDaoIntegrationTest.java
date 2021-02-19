@@ -15,7 +15,7 @@ public class JdbcVenueDaoIntegrationTest extends DAOIntegrationTest{
 	private VenueDao venueDao;
 	private JdbcTemplate jdbcTemplate;
 	
-
+	
 	@BeforeClass 
 	public static void setupData() {
 		setupDataSource();
@@ -36,7 +36,6 @@ public class JdbcVenueDaoIntegrationTest extends DAOIntegrationTest{
 	public void setup() {
 		venueDao = new JdbcVenueDao(getDataSource());
 		jdbcTemplate = new JdbcTemplate(getDataSource());
-		
 		
 		
 	}
@@ -80,21 +79,22 @@ public class JdbcVenueDaoIntegrationTest extends DAOIntegrationTest{
 		SqlRowSet rowCategory = jdbcTemplate.queryForRowSet(sqlCategory, "TestCategory");
 		rowCategory.next();
 		venue.setCategoryId(rowCategory.getInt("id"));
+		int categoryID = venue.getCategoryId();
 		
-		String sqlCategoryVenue = "INSERT INTO category_venue (venue_id, category_id) VALUES (?, ?)";
-		SqlRowSet rowCategoryVenue = jdbcTemplate.queryForRowSet(sqlCategory, venue.getVenueId(), venue.getCategoryId());
+		String sqlCategoryVenue = "INSERT INTO category_venue (venue_id, category_id) VALUES (?, ?) RETURNING venue_id";
+		SqlRowSet rowCategoryVenue = jdbcTemplate.queryForRowSet(sqlCategoryVenue, venue.getVenueId(), venue.getCategoryId());
 	}
 	
 	
-	private Venue createVenue() {
-		
-		Venue testVenue = new Venue();
-		testVenue.setCategoryName("TestCat");
-		testVenue.setCityName("TestCity");
-		testVenue.setDescription("TESTESTTEST");
-		testVenue.setStateName("TestState");
-		testVenue.setVenueName("TestVenue");
-		
-		return null;
-	}
+//	private Venue createVenue() {
+//		
+//		Venue testVenue = new Venue();
+//		testVenue.setCategoryName("TestCat");
+//		testVenue.setCityName("TestCity");
+//		testVenue.setDescription("TESTESTTEST");
+//		testVenue.setStateName("TestState");
+//		testVenue.setVenueName("TestVenue");
+//		
+//		return testVenue;
+//	}
 }

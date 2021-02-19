@@ -32,15 +32,32 @@ public class JdbcVenueDao implements VenueDao {
 		
 		List<Venue> venueList = new ArrayList<Venue>();
 		
+		int menuID = 0;
 		while(rows.next()) {
-			venueList.add(rowToVenue(rows));
+			menuID++;
+			venueList.add(rowToVenue(rows, menuID));
 		}
 				
 		return venueList;
 	}
-	
 
-	private Venue rowToVenue(SqlRowSet row) {
+	@Override
+	public Venue matchVenueWithUserSelection(int venueSelection) {
+		Venue selectedVenue = new Venue();
+		List<Venue> venueList = getAllVenues();
+		for (Venue venue : venueList) {
+			if (venue.getMenuID() == venueSelection) {
+				selectedVenue = venue;
+				break;
+			}
+		}
+		return selectedVenue;
+	}
+	
+	
+	
+	
+	private Venue rowToVenue(SqlRowSet row, int menuID) {
 		Venue venue = new Venue();
 		
 		venue.setVenueName(row.getString("venue_name"));
@@ -49,7 +66,7 @@ public class JdbcVenueDao implements VenueDao {
 		venue.setCityName(row.getString("city_name"));
 		venue.setStateName(row.getString("state_name"));
 		venue.setCategoryName(row.getString("category_name"));
-		
+		venue.setMenuID(menuID);
 		
 		return venue;
 	}
