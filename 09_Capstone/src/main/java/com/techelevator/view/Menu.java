@@ -3,6 +3,7 @@ package com.techelevator.view;
 import java.util.List;
 import java.util.Scanner;
 
+import com.techelevator.operations.Space;
 import com.techelevator.operations.Venue;
 
 public class Menu {
@@ -105,6 +106,19 @@ public class Menu {
 			}
 		}
 		return userSelection;
+	}
+	
+	public void displayVenueSpacesList(String venueName, List<Space> venueSpaces) {
+			System.out.println(venueName + " Spaces");
+			System.out.println();
+			System.out.printf("%3s %-4s %-30s %-6s %-6s %-14s %-15s%n" , "", "", "Name", "Open", "Close", "Daily Rate", "Max.Occupancy");
+		for(Space space : venueSpaces) {
+			
+		
+			System.out.printf("%3s #%-3s %-30s %-6s %-6s $%-13s %-15s%n", "", space.getMenuID(), space.getSpaceName(), space.getOpenDate(), space.getCloseDate(), space.getDailyRate(), space.getMaxOccupancy());
+		}
+		
+	;
 	}
 	
 	private int returnUserSelection (String userInput) {

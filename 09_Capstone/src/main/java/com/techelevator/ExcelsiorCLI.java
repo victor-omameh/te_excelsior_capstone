@@ -5,6 +5,7 @@ import javax.sql.DataSource;
 import org.apache.commons.dbcp2.BasicDataSource;
 import org.springframework.jdbc.datasource.SingleConnectionDataSource;
 
+import com.techelevator.jdbc.JdbcSpaceDao;
 import com.techelevator.jdbc.JdbcVenueDao;
 import com.techelevator.operations.ReservationDao;
 import com.techelevator.operations.SpaceDao;
@@ -20,6 +21,7 @@ public class ExcelsiorCLI {
 	private Main main = new Main();
 	private ViewVenue viewVenue = new ViewVenue();
 	private VenueDetails venueDetails = new VenueDetails();
+	private ListVenueSpaces listVenueSpaces = new ListVenueSpaces();
 	
 	//private static SingleConnectionDataSource dataSource;
 
@@ -35,6 +37,7 @@ public class ExcelsiorCLI {
 
 	public ExcelsiorCLI(DataSource datasource) {
 		venueDao = new JdbcVenueDao(datasource);
+		spaceDao = new JdbcSpaceDao(datasource);
 	}
 
 	public void run() {
@@ -58,13 +61,14 @@ public class ExcelsiorCLI {
 						boolean selectingVenueDetailOptions = true;
 						while (selectingVenueDetailOptions) {
 				
-							int venueDetaiOptionSelection = venueDetails.getUserSelection();
-							if (venueDetaiOptionSelection == 1) {
-								
+							int venueDetailOptionSelection = venueDetails.getUserSelection();
+							if (venueDetailOptionSelection == 1) {
+								//view spaces
+								listVenueSpaces.listVenueSpaces(selectedVenue.getVenueName(), spaceDao.getAllSpacesOfVenue(selectedVenue.getVenueId()));
 								
 							}
-							if (venueDetaiOptionSelection == 2) {
-								
+							if (venueDetailOptionSelection == 2) {
+								//search for reservation
 								
 							} else {
 								selectingVenueDetailOptions = false;
