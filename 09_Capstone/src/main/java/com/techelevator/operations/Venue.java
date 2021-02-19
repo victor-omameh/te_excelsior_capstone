@@ -4,11 +4,9 @@ public class Venue {
 	private String venueName;
 	private String cityName;
 	private String stateName;
-	private String categoryName;
 	private String description;
 	private int venueId;
 	private int cityId;
-	private int categoryId;
 	private int menuID;
 	
 	
@@ -31,12 +29,6 @@ public class Venue {
 	public void setStateName(String stateName) {
 		this.stateName = stateName;
 	}
-	public String getCategoryName() {
-		return categoryName;
-	}
-	public void setCategoryName(String categoryName) {
-		this.categoryName = categoryName;
-	}
 	public String getDescription() {
 		return description;
 	}
@@ -55,28 +47,20 @@ public class Venue {
 	public void setCityId(int cityId) {
 		this.cityId = cityId;
 	}
-	public int getCategoryId() {
-		return categoryId;
-	}
-	public void setCategoryId(int categoryId) {
-		this.categoryId = categoryId;
-	}
 	public int getMenuID() {
 		return menuID;
 	}
 	public void setMenuID(int menuID) {
 		this.menuID = menuID;
 	}
-	
 	@Override
 	public int hashCode() {
 		final int prime = 31;
 		int result = 1;
-		result = prime * result + categoryId;
-		result = prime * result + ((categoryName == null) ? 0 : categoryName.hashCode());
 		result = prime * result + cityId;
 		result = prime * result + ((cityName == null) ? 0 : cityName.hashCode());
 		result = prime * result + ((description == null) ? 0 : description.hashCode());
+		result = prime * result + menuID;
 		result = prime * result + ((stateName == null) ? 0 : stateName.hashCode());
 		result = prime * result + venueId;
 		result = prime * result + ((venueName == null) ? 0 : venueName.hashCode());
@@ -91,13 +75,6 @@ public class Venue {
 		if (getClass() != obj.getClass())
 			return false;
 		Venue other = (Venue) obj;
-		if (categoryId != other.categoryId)
-			return false;
-		if (categoryName == null) {
-			if (other.categoryName != null)
-				return false;
-		} else if (!categoryName.equals(other.categoryName))
-			return false;
 		if (cityId != other.cityId)
 			return false;
 		if (cityName == null) {
@@ -109,6 +86,8 @@ public class Venue {
 			if (other.description != null)
 				return false;
 		} else if (!description.equals(other.description))
+			return false;
+		if (menuID != other.menuID)
 			return false;
 		if (stateName == null) {
 			if (other.stateName != null)
@@ -124,6 +103,7 @@ public class Venue {
 			return false;
 		return true;
 	}
+	
 	
 	
 	

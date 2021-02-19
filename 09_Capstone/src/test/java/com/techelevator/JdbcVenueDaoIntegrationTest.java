@@ -74,15 +74,7 @@ public class JdbcVenueDaoIntegrationTest extends DAOIntegrationTest{
 		SqlRowSet rowVenue = jdbcTemplate.queryForRowSet(sqlVenue, "TestVenue", venue.getCityId(), "TESTTESTTEST" );
 		rowVenue.next();
 		venue.setVenueId(rowVenue.getInt("id"));
-		
-		String sqlCategory = "INSERT INTO category (id, name) VALUES (DEFAULT, ?) RETURNING id";
-		SqlRowSet rowCategory = jdbcTemplate.queryForRowSet(sqlCategory, "TestCategory");
-		rowCategory.next();
-		venue.setCategoryId(rowCategory.getInt("id"));
-		int categoryID = venue.getCategoryId();
-		
-		String sqlCategoryVenue = "INSERT INTO category_venue (venue_id, category_id) VALUES (?, ?) RETURNING venue_id";
-		SqlRowSet rowCategoryVenue = jdbcTemplate.queryForRowSet(sqlCategoryVenue, venue.getVenueId(), venue.getCategoryId());
+	
 	}
 	
 	

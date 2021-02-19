@@ -52,7 +52,8 @@ public class ExcelsiorCLI {
 					if (viewVenueSelection > 0) {
 						
 						Venue selectedVenue = venueDao.matchVenueWithUserSelection(viewVenueSelection);
-						venueDetails.venueDetails(selectedVenue);
+						
+						venueDetails.venueDetails(selectedVenue, venueDao.getCategories(selectedVenue.getVenueId()));
 						
 						boolean selectingVenueDetailOptions = true;
 						while (selectingVenueDetailOptions) {

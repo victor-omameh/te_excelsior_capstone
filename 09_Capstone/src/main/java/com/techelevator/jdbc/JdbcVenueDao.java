@@ -22,12 +22,9 @@ public class JdbcVenueDao implements VenueDao {
 	@Override
 	public List<Venue> getAllVenues() {
 		
-		String sql = "SELECT venue.id, venue.name AS venue_name, venue.description, city.name AS city_name, state.name AS state_name, category.name AS category_name FROM venue " + 
-				"JOIN city ON venue.city_id = city.id " + 
-				"JOIN state ON city.state_abbreviation = state.abbreviation " + 
-				"JOIN category_venue ON venue.id = category_venue.venue_id " + 
-				"JOIN category ON category_venue.category_id = category.id";
-		
+		String sql = "SELECT venue.id, venue.name AS venue_name, venue.description, city.name AS city_name, city.state_abbreviation FROM venue " + 
+				"JOIN city ON venue.city_id = city.id";
+			 
 		SqlRowSet rows = jdbcTemplate.queryForRowSet(sql);
 		
 		List<Venue> venueList = new ArrayList<Venue>();
@@ -40,7 +37,22 @@ public class JdbcVenueDao implements VenueDao {
 				
 		return venueList;
 	}
-
+	
+	@Override
+	public List<String> getCategories(int venueId) {
+		List<String> venueCategories = new ArrayList<String>();
+		
+		String sql = "SELECT category.name FROM category " + 
+				"JOIN category_venue on category.id = category_venue.category_id " + 
+				"WHERE category_venue.venue_id = ?";
+		SqlRowSet row = jdbcTemplate.queryForRowSet(sql, venueId);
+		
+		while (row.next()) {
+			venueCategories.add(row.getString("name"));
+		}
+		return venueCategories;
+	}
+	
 	@Override
 	public Venue matchVenueWithUserSelection(int venueSelection) {
 		Venue selectedVenue = new Venue();
@@ -64,11 +76,11 @@ public class JdbcVenueDao implements VenueDao {
 		venue.setVenueId(row.getInt("id"));
 		venue.setDescription(row.getString("description"));
 		venue.setCityName(row.getString("city_name"));
-		venue.setStateName(row.getString("state_name"));
-		venue.setCategoryName(row.getString("category_name"));
+		venue.setStateName(row.getString("state_abbreviation"));
 		venue.setMenuID(menuID);
 		
 		return venue;
 	}
+
 	
 }

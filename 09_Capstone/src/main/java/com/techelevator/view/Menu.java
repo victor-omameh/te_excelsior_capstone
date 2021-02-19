@@ -68,10 +68,18 @@ public class Menu {
 		return venueSelection;
 	}
 	
-	public void displaySelectedVenue(Venue selectedVenue) {
+	public void displaySelectedVenue(Venue selectedVenue, List<String> categories) {
 		System.out.println(selectedVenue.getVenueName());
 		System.out.println("Location: " + selectedVenue.getCityName() + ", " + selectedVenue.getStateName());
-		System.out.println("Categories: " + selectedVenue.getCategoryName());
+		
+		System.out.print("Categories: ");
+		for (int i = 0; i < categories.size(); i++) {
+			if (i > 0) {
+				System.out.print(", ");
+			}
+			System.out.print(categories.get(i));	
+		}
+		System.out.println();
 		System.out.println();
 		System.out.println(selectedVenue.getDescription());
 		System.out.println();
@@ -95,12 +103,9 @@ public class Menu {
 			} else {
 				incorrectSelection = false; 
 			}
-			
 		}
-		
 		return userSelection;
 	}
-	
 	
 	private int returnUserSelection (String userInput) {
 		int userSelection = 0;
