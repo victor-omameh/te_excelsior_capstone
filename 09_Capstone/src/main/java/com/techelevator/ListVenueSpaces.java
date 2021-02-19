@@ -7,9 +7,14 @@ import com.techelevator.view.Menu;
 
 public class ListVenueSpaces {
 	
+	private Menu menu = new Menu();
+	
 	public void listVenueSpaces(String venueName, List<Space> spacesList) {
-		Menu menu = new Menu();
 		menu.displayVenueSpacesList(venueName, spacesList);
+	}
+	
+	public int getUserSelection() {
+		return menu.displayVenueSpaceOptions();
 	}
 	
 }

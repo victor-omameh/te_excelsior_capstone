@@ -22,6 +22,7 @@ public class ExcelsiorCLI {
 	private ViewVenue viewVenue = new ViewVenue();
 	private VenueDetails venueDetails = new VenueDetails();
 	private ListVenueSpaces listVenueSpaces = new ListVenueSpaces();
+	private ReserveSpace reserveSpace = new ReserveSpace();
 	
 	//private static SingleConnectionDataSource dataSource;
 
@@ -51,26 +52,40 @@ public class ExcelsiorCLI {
 				boolean choosingVenue = true;
 				while (choosingVenue) {
 					
-					int viewVenueSelection = viewVenue.viewVenueSelection(venueDao.getAllVenues());
-					if (viewVenueSelection > 0) {
+					int menuID = viewVenue.viewVenueSelection(venueDao.getAllVenues());
+					if (menuID > 0) {
 						
-						Venue selectedVenue = venueDao.matchVenueWithUserSelection(viewVenueSelection);
-						
-						venueDetails.venueDetails(selectedVenue, venueDao.getCategories(selectedVenue.getVenueId()));
-						
+						Venue selectedVenue = venueDao.matchVenueWithUserSelection(menuID);
+												
 						boolean selectingVenueDetailOptions = true;
 						while (selectingVenueDetailOptions) {
 				
-							int venueDetailOptionSelection = venueDetails.getUserSelection();
-							if (venueDetailOptionSelection == 1) {
-								//view spaces
-								listVenueSpaces.listVenueSpaces(selectedVenue.getVenueName(), spaceDao.getAllSpacesOfVenue(selectedVenue.getVenueId()));
+							venueDetails.venueDetails(selectedVenue, venueDao.getCategories(selectedVenue.getVenueId()));
+							
+							int venueDetailSelection = venueDetails.getUserSelection();
+							if (venueDetailSelection == 1) {
+								
+								boolean chooseToReserve = true;
+								while (chooseToReserve) {
+									
+									listVenueSpaces.listVenueSpaces(selectedVenue.getVenueName(), spaceDao.getAllSpacesOfVenue(selectedVenue.getVenueId()));
+									int reserveSpaceSelection = listVenueSpaces.getUserSelection();
+									if (reserveSpaceSelection == 1) {
+										String startingDate = reserveSpace.getStartingDateAsString();
+										int numberOfDays = reserveSpace.getNumberOfDayRequested();
+										int numberOfPeople = reserveSpace.getNumberOfPeopleRequested();
+										
+									} else {
+										chooseToReserve = false;
+									}
+								}
+							//END CHOOSING TO RESERVE LOOP	
 								
 							}
-							if (venueDetailOptionSelection == 2) {
+							if (venueDetailSelection == 2) {
 								//search for reservation
 								
-							} else {
+							} else if (venueDetailSelection == 0){
 								selectingVenueDetailOptions = false;
 							}
 						}
