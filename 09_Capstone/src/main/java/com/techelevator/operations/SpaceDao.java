@@ -5,5 +5,5 @@ import java.util.List;
 public interface SpaceDao {
 	
 	public List<Space> getAllSpacesOfVenue(int venueId);
-	
+	public List<Space> getAllMatchingSpaces(int venueId, String startMonth, String endMonth, int numberOfPeople);
 }

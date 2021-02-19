@@ -36,6 +36,28 @@ public class JdbcSpaceDao implements SpaceDao {
 		return spacesList;
 	}
 	
+	public List<Space> getAllMatchingSpaces(int venueId, String startMonth, String endMonth, int numberOfPeople) {
+		
+		List<Space> matchingSpaces = new ArrayList<Space>();
+		
+		String sql = "SELECT space.id, space.name, space.is_accessible, space.open_from, space.open_to, space.daily_rate, space.max_occupancy FROM space " + 
+				"WHERE venue_id = ? " + 
+				"AND max_occupancy >= ? " + 
+				"AND ? BETWEEN open_from AND open_to " + 
+				"AND ? BETWEEN open_from AND open_to";
+		SqlRowSet row = jdbcTemplate.queryForRowSet(sql, venueId, numberOfPeople, startMonth, endMonth );
+		
+		int menuID = 0;
+		while(row.next()) {
+			menuID++;
+			matchingSpaces.add(rowToSpace(row, menuID));
+			
+		}
+		
+		
+		return matchingSpaces;
+	}
+	
 	public Space rowToSpace(SqlRowSet row, int menuID) {
 		Space space = new Space();
 		

@@ -1,5 +1,7 @@
 package com.techelevator;
 
+import java.util.List;
+
 import javax.sql.DataSource;
 
 import org.apache.commons.dbcp2.BasicDataSource;
@@ -8,6 +10,7 @@ import org.springframework.jdbc.datasource.SingleConnectionDataSource;
 import com.techelevator.jdbc.JdbcSpaceDao;
 import com.techelevator.jdbc.JdbcVenueDao;
 import com.techelevator.operations.ReservationDao;
+import com.techelevator.operations.Space;
 import com.techelevator.operations.SpaceDao;
 import com.techelevator.operations.Venue;
 import com.techelevator.operations.VenueDao;
@@ -71,9 +74,18 @@ public class ExcelsiorCLI {
 									listVenueSpaces.listVenueSpaces(selectedVenue.getVenueName(), spaceDao.getAllSpacesOfVenue(selectedVenue.getVenueId()));
 									int reserveSpaceSelection = listVenueSpaces.getUserSelection();
 									if (reserveSpaceSelection == 1) {
-										String startingDate = reserveSpace.getStartingDateAsString();
+										String startingDateFromUser = reserveSpace.getStartingDateAsString();
 										int numberOfDays = reserveSpace.getNumberOfDayRequested();
 										int numberOfPeople = reserveSpace.getNumberOfPeopleRequested();
+										
+										String endingDateFormatted = reservationDao.getEndDate(startingDateFromUser, numberOfDays);
+										String startingDateFormatted = reservationDao.prepareDateForSql(startingDateFromUser);
+										
+										List<Space> matchingSpaces = spaceDao.getAllMatchingSpaces(selectedVenue.getVenueId(), reservationDao.getStartingMonth(), reservationDao.getEndMonth(), numberOfPeople);
+										
+										List<Space> availableSpaces = reservationDao.getAvailableSpaces(matchingSpaces, startingDateFormatted, endingDateFormatted);
+										
+										
 										
 									} else {
 										chooseToReserve = false;
