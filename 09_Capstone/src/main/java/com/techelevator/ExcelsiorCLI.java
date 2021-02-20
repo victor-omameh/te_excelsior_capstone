@@ -74,16 +74,25 @@ public class ExcelsiorCLI {
 									listVenueSpaces.listVenueSpaces(selectedVenue.getVenueName(), spaceDao.getAllSpacesOfVenue(selectedVenue.getVenueId()));
 									int reserveSpaceSelection = listVenueSpaces.getUserSelection();
 									if (reserveSpaceSelection == 1) {
-										String startingDateFromUser = reserveSpace.getStartingDateAsString();
-										int numberOfDays = reserveSpace.getNumberOfDayRequested();
-										int numberOfPeople = reserveSpace.getNumberOfPeopleRequested();
 										
-										String endingDateFormatted = reservationDao.getEndDate(startingDateFromUser, numberOfDays);
-										String startingDateFormatted = reservationDao.prepareDateForSql(startingDateFromUser);
+										reserveSpace.askStartingDate();
+										reserveSpace.askNumberOfDays();
+										reserveSpace.askNumberOfPeople();
 										
-										List<Space> matchingSpaces = spaceDao.getAllMatchingSpaces(selectedVenue.getVenueId(), reservationDao.getStartingMonth(), reservationDao.getEndMonth(), numberOfPeople);
+										
+										String startingDateFromUser = reserveSpace.getRequestedStartingDate();
+										int numberOfDays = reserveSpace.getRequestedNumberOfDays();
+										int numberOfPeople = reserveSpace.getRequestedNumberOfPeolple();
+										
+										String endingDateFormatted = reservationDao.getEndDate(reserveSpace.getRequestedStartingDate(), reserveSpace.getRequestedNumberOfDays());
+										
+										String startingDateFormatted = reservationDao.prepareDateForSql(reserveSpace.getRequestedStartingDate());
+										
+										List<Space> matchingSpaces = spaceDao.getAllMatchingSpaces(selectedVenue.getVenueId(), reservationDao.getStartingMonth(), reservationDao.getEndMonth(), reserveSpace.getRequestedNumberOfPeolple());
 										
 										List<Space> availableSpaces = reservationDao.getAvailableSpaces(matchingSpaces, startingDateFormatted, endingDateFormatted);
+										
+										reserveSpace.displayAvailableSpace(availableSpaces, reserveSpace.getRequestedNumberOfPeolple());
 										
 										
 										

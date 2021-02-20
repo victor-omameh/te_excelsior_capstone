@@ -1,10 +1,8 @@
 package com.techelevator.jdbc;
 
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
+
 import java.time.LocalDate;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 import javax.sql.DataSource;
@@ -36,6 +34,7 @@ public class JdbcReservationDao implements ReservationDao {
 		this.jdbcTemplate = new JdbcTemplate(dataSource);
 	}
 	
+	@Override
 	public boolean isAvailable(int spaceId, String startingDate, String endDate) {
 		
 		
@@ -58,31 +57,29 @@ public class JdbcReservationDao implements ReservationDao {
 		
 	}
 	
+	@Override
 	public List<Space> getAvailableSpaces(List<Space> matchingSpaces, String startingDate, String endDate) {
 		
-		List<Space> availableSpaces = new ArrayList();
+		List<Space> availableSpaces = new ArrayList<Space>();
 		
 		for(Space space: matchingSpaces) {
 			
 			if (isAvailable(space.getSpaceId(), startingDate, endDate )) {
 				availableSpaces.add(space);
 			}
-			
 		}
-		
 		return availableSpaces;
 	}
 	
-
+	@Override
 	public String getEndDate(String startingDate, int numberOfDays) {
 		
-
 		String[] startingDateStringArray = startingDate.split("/");
-		this.startingMonth = startingDateStringArray[0];
+		String month = startingDateStringArray[0];
 		String day = startingDateStringArray[1];
 		String year = startingDateStringArray[2];
 		
-		int monthInt = Integer.parseInt(this.startingMonth);
+		int monthInt = Integer.parseInt(month);
 		int dayInt = Integer.parseInt(day);
 		int yearInt = Integer.parseInt(year);
 		
