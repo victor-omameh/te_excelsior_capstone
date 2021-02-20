@@ -16,10 +16,10 @@ import com.techelevator.operations.Space;
 public class JdbcReservationDao implements ReservationDao {
 
 	private String startingMonth;
-	private String endMonth;
+	private int endMonth;
 	
 	
-	public String getEndMonth() {
+	public int getEndMonth() {
 		return endMonth;
 	}
 
@@ -85,7 +85,7 @@ public class JdbcReservationDao implements ReservationDao {
 		
 		LocalDate endDateLocal = LocalDate.of(yearInt, monthInt, dayInt).plusDays(numberOfDays);
 		
-		this.endMonth = endDateLocal.getMonth().toString();
+		this.endMonth = endDateLocal.getMonthValue();
 		
 		String endDate = endDateLocal.toString();
 	    	

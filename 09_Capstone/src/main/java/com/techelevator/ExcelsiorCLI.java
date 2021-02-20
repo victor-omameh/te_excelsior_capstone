@@ -7,6 +7,7 @@ import javax.sql.DataSource;
 import org.apache.commons.dbcp2.BasicDataSource;
 import org.springframework.jdbc.datasource.SingleConnectionDataSource;
 
+import com.techelevator.jdbc.JdbcReservationDao;
 import com.techelevator.jdbc.JdbcSpaceDao;
 import com.techelevator.jdbc.JdbcVenueDao;
 import com.techelevator.operations.ReservationDao;
@@ -42,6 +43,7 @@ public class ExcelsiorCLI {
 	public ExcelsiorCLI(DataSource datasource) {
 		venueDao = new JdbcVenueDao(datasource);
 		spaceDao = new JdbcSpaceDao(datasource);
+		reservationDao = new JdbcReservationDao(datasource);
 	}
 
 	public void run() {
@@ -88,11 +90,12 @@ public class ExcelsiorCLI {
 										
 										String startingDateFormatted = reservationDao.prepareDateForSql(reserveSpace.getRequestedStartingDate());
 										
+										
 										List<Space> matchingSpaces = spaceDao.getAllMatchingSpaces(selectedVenue.getVenueId(), reservationDao.getStartingMonth(), reservationDao.getEndMonth(), reserveSpace.getRequestedNumberOfPeolple());
 										
 										List<Space> availableSpaces = reservationDao.getAvailableSpaces(matchingSpaces, startingDateFormatted, endingDateFormatted);
 										
-										reserveSpace.displayAvailableSpace(availableSpaces, reserveSpace.getRequestedNumberOfPeolple());
+										reserveSpace.displayAvailableSpace(availableSpaces, numberOfDays);
 										
 										
 										

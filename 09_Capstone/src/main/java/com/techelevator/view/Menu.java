@@ -1,5 +1,6 @@
 package com.techelevator.view;
 
+import java.text.DecimalFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -124,10 +125,12 @@ public class Menu {
 			System.out.println(venueName + " Spaces");
 			System.out.println();
 			System.out.printf("%3s %-4s %-30s %-6s %-6s %-14s %-15s%n" , "", "", "Name", "Open", "Close", "Daily Rate", "Max.Occupancy");
-		for(Space space : venueSpaces) {
+		
+			DecimalFormat formatter = new DecimalFormat("####.00");
+			for(Space space : venueSpaces) {
 			
 		
-			System.out.printf("%3s #%-3s %-30s %-6s %-6s $%-13s %-15s%n", "", space.getMenuID(), space.getSpaceName(), space.getOpenDate(), space.getCloseDate(), space.getDailyRate(), space.getMaxOccupancy());
+			System.out.printf("%3s #%-3s %-30s %-6s %-6s $%-13s %-15s%n", "", space.getMenuID(), space.getSpaceName(), space.getOpenDate(), space.getCloseDate(), formatter.format(space.getDailyRate()), space.getMaxOccupancy());
 		}
 	}
 	
@@ -225,7 +228,7 @@ public class Menu {
 		System.out.println();
 		System.out.println("The following spaces are available based on your needs: ");
 		System.out.println();
-		System.out.printf("%3s %-4s %-30s %-6s %-6s %-14s %-15s%n" , "", "Space #", "Name", "Daily Rate", "Max Occup.", "Accessible?", "Total Cost");
+		System.out.printf("%3s %-11s %-25s %-15s %-15s %-15s %-15s%n" , "", "Space #", "Name", "Daily Rate", "Max Occup.", "Accessible?", "Total Cost");
 		
 		for(Space space : venueSpaces) {
 		String isAccessible = null;
@@ -235,8 +238,11 @@ public class Menu {
 		} else {
 			isAccessible = "No";
 		}
+		DecimalFormat formatter = new DecimalFormat("#,###");
+		double totalCost = (space.getDailyRate() * numberOfDays);
 			
-		System.out.printf("%3s #%-3s %-30s %-6s %-6s $%-13s %-15s%n", "", space.getMenuID(), space.getSpaceName(), space.getDailyRate(), space.getMaxOccupancy(), isAccessible, space.getDailyRate()*numberOfDays);
+		System.out.printf("%3s #%-10s %-25s $%-14s %-15s %-15s $%-15s%n", 
+				"", space.getMenuID(), space.getSpaceName(), formatter.format(space.getDailyRate()), space.getMaxOccupancy(), isAccessible, formatter.format(totalCost));
 		
 		}
 	}
