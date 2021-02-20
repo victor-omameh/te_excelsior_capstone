@@ -61,9 +61,24 @@ public class JdbcSpaceDao implements SpaceDao {
 		return matchingSpaces;
 	}
 	
-	public Space rowToSpace(SqlRowSet row, int menuID) {
+	@Override
+	public Space getBookedSpace(List<Space> availableList, int menuID) {
+		Space bookedSpace = new Space();
+		
+		for (Space space : availableList) {
+			if (space.getMenuID() == menuID) {
+				bookedSpace = space;
+				break;
+			}
+		}
+		return bookedSpace;
+	}
+	
+	
+	private Space rowToSpace(SqlRowSet row, int menuID) {
 		Space space = new Space();
 		
+		space.setSpaceId(row.getInt("id"));
 		space.setSpaceName(row.getString("name"));
 		space.setAccessible(row.getBoolean("is_accessible"));
 		//handle null
@@ -124,5 +139,6 @@ public class JdbcSpaceDao implements SpaceDao {
 		
 		return dailyRateAsDouble;
 	}
+
 	
 }

@@ -87,17 +87,42 @@ public class ExcelsiorCLI {
 										int numberOfPeople = reserveSpace.getRequestedNumberOfPeolple();
 										
 										String endingDateFormatted = reservationDao.getEndDate(reserveSpace.getRequestedStartingDate(), reserveSpace.getRequestedNumberOfDays());
-										
 										String startingDateFormatted = reservationDao.prepareDateForSql(reserveSpace.getRequestedStartingDate());
 										
 										
 										List<Space> matchingSpaces = spaceDao.getAllMatchingSpaces(selectedVenue.getVenueId(), reservationDao.getStartingMonth(), reservationDao.getEndMonth(), reserveSpace.getRequestedNumberOfPeolple());
-										
 										List<Space> availableSpaces = reservationDao.getAvailableSpaces(matchingSpaces, startingDateFormatted, endingDateFormatted);
 										
-										reserveSpace.displayAvailableSpace(availableSpaces, numberOfDays);
 										
-										
+										if (reservationDao.verifySpaceAvailabilty()) {
+											
+											reserveSpace.displayAvailableSpace(availableSpaces, numberOfDays);
+											int spaceMenuIdSelection = reserveSpace.promptUserForSpaceSelection(availableSpaces);
+											
+											if (spaceMenuIdSelection == 0) {
+												break;
+											}
+											String customerName = reserveSpace.promptUserForName();
+											
+											Space bookedSpace = spaceDao.getBookedSpace(availableSpaces, spaceMenuIdSelection);
+											int confirmationNumber = reservationDao.bookReservation(bookedSpace.getSpaceId(), numberOfPeople, startingDateFormatted, endingDateFormatted, customerName);
+											String customerEndDate = reservationDao.getCustomerEndDate();
+											reserveSpace.displayCustomerReceipt(confirmationNumber, selectedVenue.getVenueName(), bookedSpace.getSpaceName(), customerName, numberOfPeople, startingDateFromUser, customerEndDate, bookedSpace.getDailyRate(), numberOfDays );
+											
+											chooseToReserve = false;
+											selectingVenueDetailOptions = false;
+											choosingVenue = false;
+											
+										} else {
+											if (reserveSpace.userSelectionToSearchOrCancel()) {
+												chooseToReserve = false;
+											} else {
+												chooseToReserve = false;
+												selectingVenueDetailOptions = false;
+												choosingVenue = false;
+											}
+											
+										}
 										
 									} else {
 										chooseToReserve = false;

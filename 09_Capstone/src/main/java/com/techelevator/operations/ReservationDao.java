@@ -10,4 +10,7 @@ public interface ReservationDao {
 	public int getEndMonth();
 	public String getStartingMonth();
 	public List<Space> getAvailableSpaces(List<Space> matchingSpaces, String startingDate, String endDate);
+	public int bookReservation (int spaceId, int numberOfPeople, String startDate, String endDate, String customerName);
+	public String getCustomerEndDate();
+	public boolean verifySpaceAvailabilty();
 }

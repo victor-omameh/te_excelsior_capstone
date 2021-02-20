@@ -42,4 +42,19 @@ public class ReserveSpace {
 		menu.displayAvailableSpaces(venueSpaces, numberOfDays);
 	}
 	
+	public int promptUserForSpaceSelection(List<Space> availableSpaces) {
+		return menu.selectingSpace(availableSpaces);
+	}
+	
+	public String promptUserForName() {
+		return menu.customerName();
+	}
+	
+	public void displayCustomerReceipt(int confirmationNumber, String venueName, String spaceName, String customerName, int numberOfPeople, String startDate, String endDate, double spacePrice, int numberOfDays) {
+		menu.displayConfirmationReceipt(confirmationNumber, venueName, spaceName, customerName, numberOfPeople, startDate, endDate, spacePrice, numberOfDays);
+	}
+	
+	public boolean userSelectionToSearchOrCancel() {
+		return menu.noAvailableSpace();
+	}
 }

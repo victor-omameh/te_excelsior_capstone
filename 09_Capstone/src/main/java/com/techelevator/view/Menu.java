@@ -13,6 +13,7 @@ import com.techelevator.operations.Venue;
 public class Menu {
 	
 	private Scanner userInput = new Scanner(System.in);
+	private double totalCost;
 	
 //MAIN MENU	
 	public String mainMenuSelection() {
@@ -239,12 +240,107 @@ public class Menu {
 			isAccessible = "No";
 		}
 		DecimalFormat formatter = new DecimalFormat("#,###");
-		double totalCost = (space.getDailyRate() * numberOfDays);
+		this.totalCost = (space.getDailyRate() * numberOfDays);
 			
 		System.out.printf("%3s #%-10s %-25s $%-14s %-15s %-15s $%-15s%n", 
 				"", space.getMenuID(), space.getSpaceName(), formatter.format(space.getDailyRate()), space.getMaxOccupancy(), isAccessible, formatter.format(totalCost));
 		
 		}
+	}
+	
+	
+	public boolean noAvailableSpace() {
+		
+		boolean userChoice = false;
+		
+		System.out.println();
+		System.out.println("There are no available spaces.");
+		
+		boolean wrongInput = true;
+		while(wrongInput) {
+			System.out.println("Would you like to try a different search?(Y/N) ");
+			String choiceAsString = userInput.nextLine();
+			if (choiceAsString.equalsIgnoreCase("Y") || choiceAsString.equalsIgnoreCase("N")) {
+				if (choiceAsString.equalsIgnoreCase("Y")) {
+					userChoice = true;
+				}
+				wrongInput = false;
+			} else {
+				System.out.println();
+				System.out.println("***Invalid Response - Please eneter (Y or N)");
+			}
+			
+		}
+		return userChoice;
+	}
+	
+	public int selectingSpace(List<Space> availableSpaces) {
+		
+		int menuIdSelection = 0;
+		
+		boolean incorrectMenuId = true;
+		while (incorrectMenuId) {
+			
+			System.out.println();
+			System.out.print("Which space would you like to reserve (enter 0 to cancel)? ");
+			String inputAsString = userInput.nextLine();
+			
+			try {
+				menuIdSelection = Integer.parseInt(inputAsString);
+				if (menuIdSelection < 0) {
+					System.out.println("**Invalid Selection**");
+				} else if (menuIdSelection > 0){
+					for (Space availableSpace : availableSpaces) {
+						if (availableSpace.getMenuID() == menuIdSelection) {
+							incorrectMenuId = false;
+							break;
+						}
+					}
+				} else if (menuIdSelection == 0) {
+					incorrectMenuId = false;
+				}
+			} catch (NumberFormatException e) {
+				System.out.println("**Invalid Selection**");
+			}
+		}
+		return menuIdSelection;
+	}
+	
+	
+	public String customerName() {
+		String name = null;
+		
+		boolean nameNull = true;
+		while (nameNull) {
+			
+			System.out.print("Who is this reservation for? ");
+			name = userInput.nextLine();
+			
+			if (!(name.equals(" ")) || !(name.equals(null))) {
+				nameNull = false;
+			}
+		}
+		
+		return name;
+	}
+	
+	public void displayConfirmationReceipt(int confirmationNumber, String venueName, String spaceName, String customerName, int numberOfPeople, String startDate, String endDate, double spacePrice, int numberOfDays) {
+		DecimalFormat formatter = new DecimalFormat("$#,###");
+		
+		System.out.println();
+		System.out.println("Thanks for submitting your reservation! The details for your event are listed below: ");
+		System.out.println();
+		System.out.printf("%16s %-35s%n", "Confirmation #:" , confirmationNumber);
+		System.out.printf("%16s %-35s%n", "Venue:" , venueName);
+		System.out.printf("%16s %-35s%n", "Space:" , spaceName);
+		System.out.printf("%16s %-35s%n", "Reserved for:" , customerName);
+		System.out.printf("%16s %-35s%n", "Attendees:" , numberOfPeople);
+		System.out.printf("%16s %-35s%n", "Arrival Date:" , startDate);
+		System.out.printf("%16s %-35s%n", "Depart Date:" , endDate);
+		System.out.printf("%16s %-35s%n", "Total Cost:" , formatter.format(spacePrice*numberOfDays));
+		System.out.println();
+		System.out.println();
+		
 	}
 	
 	
@@ -259,7 +355,7 @@ public class Menu {
 	
 	private boolean checkDateFormat (String requestedDate) {
 		boolean formatCorrect = false;
-		
+		Date date = new Date();
 		if (requestedDate.trim().equals("")){
 		    return formatCorrect;
 		    
@@ -269,8 +365,12 @@ public class Menu {
 			    sdfrmt.setLenient(false);
 			    
 			    try {
-			    	sdfrmt.parse(requestedDate); 
-			        formatCorrect = true; //CHECK IF DATE IS IN PAST
+			    	Date selectedDate = sdfrmt.parse(requestedDate);
+			    	if (selectedDate.after(date) || selectedDate.equals(date)) {
+			    		formatCorrect = true;
+			    	} else {
+			    		System.out.println(requestedDate+" is an invalid Date");
+			    	}
 			    }
 			    catch (ParseException e)
 			    {
@@ -278,6 +378,7 @@ public class Menu {
 			        return formatCorrect;
 			    }
 		}
+		
 		return formatCorrect;
 	}
 	

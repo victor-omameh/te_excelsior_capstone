@@ -17,6 +17,8 @@ public class JdbcReservationDao implements ReservationDao {
 
 	private String startingMonth;
 	private int endMonth;
+	private List<Space> availableSpaces;
+	private String customerEndDate;
 	
 	
 	public int getEndMonth() {
@@ -37,6 +39,7 @@ public class JdbcReservationDao implements ReservationDao {
 	@Override
 	public boolean isAvailable(int spaceId, String startingDate, String endDate) {
 		
+		boolean hasAvailablilty = false;
 		
 		String sql = "SELECT reservation_id, space_id, number_of_attendees, start_date, end_date, reserved_for FROM reservation " + 
 				"WHERE space_id = ? " + 
@@ -46,15 +49,16 @@ public class JdbcReservationDao implements ReservationDao {
 		
 		int i = 0;
 		while(row.next()) {
-			i++;
+			
+			if (row.getInt("reservation_id") > 0) {
+				i++;
+				break;
+			}
 		}
-		
-		if (i > 0 ) {
-			return false;
-		} else {
-			return true;
+		if (i == 0 ) {
+			hasAvailablilty = true;
 		}
-		
+		return hasAvailablilty;
 	}
 	
 	@Override
@@ -68,6 +72,8 @@ public class JdbcReservationDao implements ReservationDao {
 				availableSpaces.add(space);
 			}
 		}
+		
+		this.availableSpaces = availableSpaces;
 		return availableSpaces;
 	}
 	
@@ -88,6 +94,29 @@ public class JdbcReservationDao implements ReservationDao {
 		this.endMonth = endDateLocal.getMonthValue();
 		
 		String endDate = endDateLocal.toString();
+		
+		String[] endingDateStringArray = endDate.split("-");
+		String endMonth = endingDateStringArray[1];
+		String endDay = endingDateStringArray[2];
+		String endYear = endingDateStringArray[0];
+		
+		
+		char endMonthAsChar = endMonth.charAt(1);
+		char endDayAsChar = endDay.charAt(1);
+		
+		
+		if ((endMonth.charAt(0) == '0') && (endDay.charAt(0) == '0')) {
+			this.customerEndDate = endMonthAsChar + "/" + endDayAsChar + "/" + endYear;
+			
+		} else if (!(endMonth.charAt(0) == '0') || (endDay.charAt(0) == '0')) {
+			this.customerEndDate = endMonth + "/" + endDayAsChar + "/" + endYear;
+			
+		} else if ((endMonth.charAt(0) == '0') || !(endDay.charAt(0) == '0')) {
+			this.customerEndDate = endMonthAsChar + "/" + endDay + "/" + endYear;
+			
+		} else {
+			this.customerEndDate = endMonth + "/" + endDay + "/" + endYear;
+		}
 	    	
 		return endDate;
 	}
@@ -105,5 +134,34 @@ public class JdbcReservationDao implements ReservationDao {
 		
 		return sqlReady;
 	}
+	
+	
+	@Override
+	public int bookReservation(int spaceId, int numberOfPeople, String startDate, String endDate, String customerName) {
+		
+		int confirmationNumber = 0;
+		
+		String sql = "INSERT INTO reservation (reservation_id, space_id, number_of_attendees, start_date, end_date, reserved_for) VALUES (DEFAULT, ?, ?, CAST (? AS DATE), CAST(? AS DATE), ?) RETURNING reservation_id";
+		SqlRowSet row = jdbcTemplate.queryForRowSet(sql, spaceId, numberOfPeople, startDate, endDate, customerName);
+		row.next();
+		confirmationNumber = row.getInt("reservation_id");
+		
+		return confirmationNumber;
+	}
+
+	@Override
+	public String getCustomerEndDate() {
+		return this.customerEndDate;
+	}
+	
+	@Override
+	public boolean verifySpaceAvailabilty() {
+		if (this.availableSpaces.size() > 0) {
+			return true;
+		} else {
+			return false;
+		}
+	}
+
 	
 }
