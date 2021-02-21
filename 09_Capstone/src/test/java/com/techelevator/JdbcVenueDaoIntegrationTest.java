@@ -1,6 +1,7 @@
 package com.techelevator;
 
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.List;
 
 import org.junit.*;
@@ -54,6 +55,56 @@ public class JdbcVenueDaoIntegrationTest extends DAOIntegrationTest{
 		Assert.assertEquals(originalCount + 1, resultCount);
 	}
 	
+	@Test
+	public void match_venue_with_user_selection() {
+		insertVenue();
+		Venue testVenue = new Venue();
+		List<Venue> venuesAfterInsert = venueDao.getAllVenues();
+		
+		for (Venue venue : venuesAfterInsert) {
+			if (venue.getVenueName().equalsIgnoreCase("TestVenue")) {
+				testVenue = venue;
+			}
+		}
+		Venue result = venueDao.matchVenueWithUserSelection(testVenue.getMenuID());
+		
+		Assert.assertEquals(testVenue.getMenuID(), result.getMenuID());
+	}
+	
+	@Test
+	public void return_categories_from_selected_venue() {
+		
+		List<String> test = new ArrayList();
+		test.add("TestCategory");
+		
+		insertVenue();
+		
+		List<Venue> venuesAfterInsert = venueDao.getAllVenues();
+		Venue testVenue = new Venue();
+		for (Venue venue : venuesAfterInsert) {
+			if (venue.getVenueName().equalsIgnoreCase("TestVenue")) {
+				testVenue = venue;
+			}
+		}
+		
+		int testVenueID = testVenue.getVenueId();
+		
+		String insertCat = "INSERT INTO category (id, name) VALUES (DEFAULT, ?) RETURNING id";
+		SqlRowSet catRow = jdbcTemplate.queryForRowSet(insertCat, "TestCategory");
+		catRow.next();
+		int catID = catRow.getInt("id");
+		
+		String insertCatVenue = "INSERT INTO category_venue (venue_id, category_id) VALUES (?, ?) RETURNING venue_id";
+		jdbcTemplate.queryForRowSet(insertCatVenue, testVenueID, catID);
+		
+		List<String> result = venueDao.getCategories(testVenueID);
+		
+		Assert.assertEquals(test, result);
+		
+		
+	}
+	
+	
 	private void insertVenue() {
 		
 		Venue venue = new Venue();
@@ -76,6 +127,7 @@ public class JdbcVenueDaoIntegrationTest extends DAOIntegrationTest{
 		venue.setVenueId(rowVenue.getInt("id"));
 	
 	}
+	
 	
 	
 //	private Venue createVenue() {

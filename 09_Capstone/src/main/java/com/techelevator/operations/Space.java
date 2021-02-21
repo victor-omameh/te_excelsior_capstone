@@ -59,4 +59,60 @@ public class Space {
 	public void setMenuID(int menuID) {
 		this.menuID = menuID;
 	}
+	
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + ((closeDate == null) ? 0 : closeDate.hashCode());
+		long temp;
+		temp = Double.doubleToLongBits(dailyRate);
+		result = prime * result + (int) (temp ^ (temp >>> 32));
+		result = prime * result + (isAccessible ? 1231 : 1237);
+		result = prime * result + maxOccupancy;
+		result = prime * result + menuID;
+		result = prime * result + ((openDate == null) ? 0 : openDate.hashCode());
+		result = prime * result + spaceId;
+		result = prime * result + ((spaceName == null) ? 0 : spaceName.hashCode());
+		return result;
+	}
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		Space other = (Space) obj;
+		if (closeDate == null) {
+			if (other.closeDate != null)
+				return false;
+		} else if (!closeDate.equals(other.closeDate))
+			return false;
+		if (Double.doubleToLongBits(dailyRate) != Double.doubleToLongBits(other.dailyRate))
+			return false;
+		if (isAccessible != other.isAccessible)
+			return false;
+		if (maxOccupancy != other.maxOccupancy)
+			return false;
+		if (menuID != other.menuID)
+			return false;
+		if (openDate == null) {
+			if (other.openDate != null)
+				return false;
+		} else if (!openDate.equals(other.openDate))
+			return false;
+		if (spaceId != other.spaceId)
+			return false;
+		if (spaceName == null) {
+			if (other.spaceName != null)
+				return false;
+		} else if (!spaceName.equals(other.spaceName))
+			return false;
+		return true;
+	}
+	
+	
+	
 }

@@ -50,23 +50,90 @@ public class JdbcSpaceDaoIntegrationTest extends DAOIntegrationTest{
 	@Test
 	public void get_all_spaces_of_venue_test() {
 		
-		List<Space> originalList = spaceDao.getAllSpacesOfVenue(1);
+		Venue testVenue = insertVenue();
+		
+		List<Space> originalList = spaceDao.getAllSpacesOfVenue(testVenue.getVenueId());
 		int originalCount = originalList.size();
 		
-		insertSpace();
 		
-		List<Space> resultList = spaceDao.getAllSpacesOfVenue(1);
+		insertSpace(testVenue.getVenueId());
+		
+		List<Space> resultList = spaceDao.getAllSpacesOfVenue(testVenue.getVenueId());
 		int resultCount = resultList.size();
 		
 		Assert.assertEquals(originalCount + 1, resultCount);
 	}
+	
+	
+	@Test
+	public void get_all_matching_spaces() {
+		
+		Venue testVenue = insertVenue();
+		
+		insertSpace(testVenue.getVenueId());
+		
+		List<Space> resultList = spaceDao.getAllMatchingSpaces(testVenue.getVenueId(), "2", 3, 50);
+		
+		String result = null;
+		for (Space resultSpace : resultList) {
+			result = resultSpace.getSpaceName();
+		}
+		
+		Assert.assertEquals("TestName", result);
+		
+	}
+	
+	@Test
+	public void get_booked_space() {
+		
+		Venue testVenue = insertVenue();
+		insertSpace(testVenue.getVenueId());
+		List<Space> testList = spaceDao.getAllSpacesOfVenue(testVenue.getVenueId());
+		
+		Space testSpace = new Space();
+		for (Space space : testList ) {
+			if (space.getSpaceName().equalsIgnoreCase("TestName")) {
+				testSpace = space;
+			}
+		}
+		
+		Space resultSpace = spaceDao.getBookedSpace(testList, testSpace.getMenuID());
+		
+		Assert.assertEquals(testSpace, resultSpace);
+		
+	}
 
 
-	private void insertSpace() {
+	private Venue insertVenue() {
+		
+		Venue testVenue = new Venue();
+		
+		
+		String sqlState = "INSERT INTO state (abbreviation, name) VALUES (?, ?) RETURNING name";
+		SqlRowSet rowState = jdbcTemplate.queryForRowSet(sqlState, "TT", "TestState");
+		rowState.next();
+		testVenue.setStateName(rowState.getString("name"));
+		
+		
+		String sqlCity = "INSERT INTO city (id, name, state_abbreviation) VALUES (DEFAULT, ?, ?) RETURNING id";
+		SqlRowSet rowCity = jdbcTemplate.queryForRowSet(sqlCity, "TestCity", "TT");
+		rowCity.next();
+		testVenue.setCityId(rowCity.getInt("id"));
+		
+		String sqlVenue = "INSERT INTO venue (id, name, city_id, description) VALUES (DEFAULT, ?, ?, ?) RETURNING id";
+		SqlRowSet rowVenue = jdbcTemplate.queryForRowSet(sqlVenue, "TestVenue", testVenue.getCityId(), "TESTTESTTEST" );
+		rowVenue.next();
+		testVenue.setVenueId(rowVenue.getInt("id"));
+		
+		return testVenue;
+	
+	}
+	
+	
+	private void insertSpace(int testVenueID) {
 		
 		String sql = "INSERT INTO space (id, venue_id, name, is_accessible, open_from, open_to, daily_rate, max_occupancy) VALUES (DEFAULT, ?, ?, ?, ?, ?, ?::numeric::MONEY, ?) RETURNING id";
-		SqlRowSet row = jdbcTemplate.queryForRowSet(sql, 1, "TestName", false, 1, 11, 5555, 200);
-		row.next();
+		jdbcTemplate.queryForRowSet(sql, testVenueID, "TestName", false, 1, 11, 5555, 200);
 		
 	}
 
