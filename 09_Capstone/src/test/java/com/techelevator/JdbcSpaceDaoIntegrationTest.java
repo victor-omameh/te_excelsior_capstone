@@ -61,7 +61,7 @@ public class JdbcSpaceDaoIntegrationTest extends DAOIntegrationTest{
 		Assert.assertEquals(originalCount + 1, resultCount);
 	}
 
-	
+
 	private void insertSpace() {
 		
 		String sql = "INSERT INTO space (id, venue_id, name, is_accessible, open_from, open_to, daily_rate, max_occupancy) VALUES (DEFAULT, ?, ?, ?, ?, ?, ?::numeric::MONEY, ?) RETURNING id";

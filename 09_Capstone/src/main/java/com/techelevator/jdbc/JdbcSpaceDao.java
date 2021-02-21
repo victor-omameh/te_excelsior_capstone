@@ -47,8 +47,8 @@ public class JdbcSpaceDao implements SpaceDao {
 				"AND max_occupancy >= ? " + 
 				"AND ? BETWEEN open_from AND open_to " + 
 				"AND ? BETWEEN open_from AND open_to " +
-				"OR venue_id = ? AND open_from IS NULL";
-		SqlRowSet row = jdbcTemplate.queryForRowSet(sql, venueId, numberOfPeople, startMonthInt, endMonth, venueId );
+				"OR venue_id = ? AND max_occupancy >= ? AND open_from IS NULL";
+		SqlRowSet row = jdbcTemplate.queryForRowSet(sql, venueId, numberOfPeople, startMonthInt, endMonth, venueId, numberOfPeople );
 		
 		int menuID = 0;
 		while(row.next()) {
